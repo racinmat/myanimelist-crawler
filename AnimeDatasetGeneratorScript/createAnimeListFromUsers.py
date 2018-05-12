@@ -9,7 +9,7 @@ import json
 import csv
 import sys
 
-with open('../User Dataset Generator Scripts/UserList.rick', 'rb') as f:
+with open('../UserDatasetGeneratorScripts/UserList.rick', 'rb') as f:
     users = pickle.load(f)
 
 anime_ids = set()
