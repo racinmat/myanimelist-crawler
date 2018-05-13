@@ -10,8 +10,15 @@ import time
 import csv
 
 if __name__ == '__main__':
+    print('opening data')
     with open('AnimeList.rick', 'rb') as f:
         animes = pickle.load(f)
+    print('data loaded, going to dump')
+
+    widgets = [progressbar.Percentage(), ' ', progressbar.Counter(), ' ', progressbar.Bar(), ' ',
+               progressbar.FileTransferSpeed()]
+    pbar = progressbar.ProgressBar(widgets=widgets, max_value=len(animes)).start()
+    counter = 0
 
     with open('AnimeList.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=',',
@@ -25,6 +32,9 @@ if __name__ == '__main__':
                          'ending_theme'])
 
         for id in animes:
+            counter += 1
+            pbar.update(counter)
+
             anime = animes[id]
             if not anime['loadedInfo']:
                 continue

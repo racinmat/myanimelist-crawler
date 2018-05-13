@@ -13,6 +13,13 @@ if __name__ == '__main__':
     with open('UserListBackup.rick', 'rb') as f:    # could take long, like this it wont interfere with the ongoing scraping
         users = pickle.load(f)
 
+    print('data loaded, going to dump')
+
+    widgets = [progressbar.Percentage(), ' ', progressbar.Counter(), ' ', progressbar.Bar(), ' ',
+               progressbar.FileTransferSpeed()]
+    pbar = progressbar.ProgressBar(widgets=widgets, max_value=len(users)).start()
+    counter = 0
+
     with open('UserList.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=',',
                             quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -22,6 +29,9 @@ if __name__ == '__main__':
                          'user_plantowatch', 'user_days_spent_watching'])
 
         for username in users:
+            counter += 1
+            pbar.update(counter)
+
             user = users[username]
             if not user['loadedRatings']:
                 continue
@@ -31,6 +41,8 @@ if __name__ == '__main__':
                              user['myinfo']['user_days_spent_watching']])
 
     print('users dumped to csv, going to dump animelists')
+    pbar = progressbar.ProgressBar(widgets=widgets, max_value=len(users)).start()
+    counter = 0
 
     with open('UserAnimeList.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=',',
@@ -41,6 +53,9 @@ if __name__ == '__main__':
                          'my_score', 'my_status', 'my_rewatching', 'my_rewatching_ep', 'my_last_updated', 'my_tags'])
 
         for username in users:
+            counter += 1
+            pbar.update(counter)
+
             user = users[username]
             if not user['loadedRatings']:
                 continue
