@@ -4,10 +4,6 @@ This script only creates list of anime ids from users ratings so we have anime f
 import os
 import pickle
 
-import requests
-import json
-import csv
-import sys
 
 with open('../UserDatasetGeneratorScripts/UserList.rick', 'rb') as f:
     users = pickle.load(f)
