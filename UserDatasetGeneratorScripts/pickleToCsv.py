@@ -10,7 +10,7 @@ import time
 import csv
 
 if __name__ == '__main__':
-    with open('UserList.rick', 'rb') as f:
+    with open('UserListBackup.rick', 'rb') as f:    # could take long, like this it wont interfere with the ongoing scraping
         users = pickle.load(f)
 
     with open('UserList.csv', 'w', newline='') as csvfile:
@@ -18,13 +18,19 @@ if __name__ == '__main__':
                             quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
         # header
-        writer.writerow(['username'])
+        writer.writerow(['username', 'user_id', 'user_watching', 'user_completed', 'user_onhold', 'user_dropped',
+                         'user_plantowatch', 'user_days_spent_watching'])
 
         for username in users:
             user = users[username]
             if not user['loadedRatings']:
                 continue
-            writer.writerow(username)
+            writer.writerow([username, user['myinfo']['user_id'], user['myinfo']['user_watching'],
+                             user['myinfo']['user_completed'], user['myinfo']['user_onhold'],
+                             user['myinfo']['user_dropped'], user['myinfo']['user_plantowatch'],
+                             user['myinfo']['user_days_spent_watching']])
+
+    print('users dumped to csv, going to dump animelists')
 
     with open('UserAnimeList.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=',',
@@ -57,4 +63,4 @@ if __name__ == '__main__':
                     anime['my_tags'],
                 ])
 
-    print('anime dumped to csv')
+    print('animelists dumped to csv')
