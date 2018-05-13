@@ -9,6 +9,8 @@ import pickle
 import time
 import csv
 
+import progressbar
+
 if __name__ == '__main__':
     with open('UserListBackup.rick', 'rb') as f:    # could take long, like this it wont interfere with the ongoing scraping
         users = pickle.load(f)

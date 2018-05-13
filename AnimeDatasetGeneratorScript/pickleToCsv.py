@@ -9,6 +9,8 @@ import pickle
 import time
 import csv
 
+import progressbar
+
 if __name__ == '__main__':
     print('opening data')
     with open('AnimeList.rick', 'rb') as f:

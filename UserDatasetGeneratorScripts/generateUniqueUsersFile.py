@@ -10,6 +10,8 @@ import os
 import pickle
 import re
 import time
+
+import progressbar
 from bs4 import BeautifulSoup
 import requests
 import sys
@@ -17,13 +19,32 @@ import glob
 
 
 def generate_unique_users(pickleFile):
-    usernames = set()
+    print('searching files')
+    files = glob.glob('user-lists/*.txt')
+    print('done searching, going to extract usernames from {} files'.format(len(files)))
 
-    for i, file in enumerate(sorted(glob.glob('user-lists/*.txt'), key=os.path.getmtime)):
+    widgets = [progressbar.Percentage(), ' ', progressbar.Counter(), ' ', progressbar.Bar(), ' ',
+               progressbar.FileTransferSpeed()]
+    pbar = progressbar.ProgressBar(widgets=widgets, max_value=len(files)).start()
+
+    # just appending lists inplace and creating the set afterwards is much faster than creating union per each file
+    usernames = []
+
+    for i, file in enumerate(files):
+        pbar.update(i)
+
         with open(file, 'r') as f:
             loaded_names = f.read().split('\n')
-        loaded_names = set([l for l in loaded_names if l])
-        usernames = usernames.union(set(loaded_names))
+
+        # data clansing per 2000 iterations, getting rid of duplicates once at a time makes it faster a lot
+        if i % 2000 == 0:
+            usernames = [l for l in usernames if l]  # to clear of empty strings
+            usernames = list(set(usernames))
+
+        usernames.extend(loaded_names)
+
+    usernames = [l for l in usernames if l]  # to clear of empty strings
+    usernames = set(usernames)
 
     print('{} unique usernames written'.format(len(usernames)))
     # this is for original getUser.py format

@@ -8,8 +8,9 @@ import json
 import pickle
 import time
 
-if __name__ == '__main__':
-    with open('UserList.rick', 'rb') as f:
+
+def calculate_annotations(users_file):
+    with open(users_file, 'rb') as f:
         users = pickle.load(f)
 
     print('animelist data')
@@ -25,3 +26,7 @@ if __name__ == '__main__':
     print('info data')
     print('{} unique users'.format(len(users)))
     print('{} of them have annotations'.format(len([u for u in users if users[u]['loadedInfo']])))
+
+
+if __name__ == '__main__':
+    calculate_annotations('UserList.rick')
