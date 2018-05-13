@@ -1,3 +1,3 @@
 #!/bin/bash
 
-nohup python3 getUserData.py &> log-ratings.log &
+nohup python3 getUserInfo.py &> log-info.log &
