@@ -1,11 +1,7 @@
 '''
 This script can be used to download user dataset from [**Myanimelist**](https://myanimelist.net/) using an API, [**Kuristina**](https://github.com/TimboKZ/kuristina).
 
-Column metadata:
-
-* userID: MAL user ID animeID, 
-* animeID: id of anime as in anime url https://myanimelist.net/anime/ID
-* score: score by the use for anime with id = animeID (if user haven't score the anime then this field is 0).
+For CSV output, please use the pickleToCsv script.
 '''
 
 # importing libraries

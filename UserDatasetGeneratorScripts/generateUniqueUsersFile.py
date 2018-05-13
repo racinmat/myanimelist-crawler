@@ -16,8 +16,7 @@ import sys
 import glob
 
 
-if __name__ == '__main__':
-    pickleFile = 'UserList.rick'
+def generate_unique_users(pickleFile):
     usernames = set()
 
     for i, file in enumerate(sorted(glob.glob('user-lists/*.txt'), key=os.path.getmtime)):
@@ -45,3 +44,8 @@ if __name__ == '__main__':
 
     with open(pickleFile, 'wb+') as f:
         pickle.dump(users, f)
+
+
+if __name__ == '__main__':
+    pickleFile = 'UserList.rick'
+    generate_unique_users(pickleFile)
