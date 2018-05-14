@@ -27,25 +27,28 @@ for username in users:
         print('already loaded, skipping')
         continue
 
+    print('going to dump data for username {}'.format(username))
     userData = session.user(username)
 
-    count += 1
+    try:
+        userData.load()
+        count += 1
 
-    userData.load()
-
-    # from stats, I only want mean score, total entries, rewatched and episodes, the rest already is scraped with animelists
-    user['loadedInfo'] = True
-    user['info'] = {
-        'gender': userData.gender,
-        'location': userData.location,
-        'birth_date': userData.birthday,
-        'access_rank': userData.access_rank,
-        'join_date': userData.join_date,
-        'last_online': userData.last_online,
-        'stats_mean_score': userData.anime_stats['Mean Score'],
-        'stats_rewatched': userData.anime_stats['Rewatched'],
-        'stats_episodes': userData.anime_stats['Episodes'],
-    }
+        # from stats, I only want mean score, total entries, rewatched and episodes, the rest already is scraped with animelists
+        user['loadedInfo'] = True
+        user['info'] = {
+            'gender': userData.gender,
+            'location': userData.location,
+            'birth_date': userData.birthday,
+            'access_rank': userData.access_rank,
+            'join_date': userData.join_date,
+            'last_online': userData.last_online,
+            'stats_mean_score': userData.anime_stats['Mean Score'],
+            'stats_rewatched': userData.anime_stats['Rewatched'],
+            'stats_episodes': userData.anime_stats['Episodes'],
+        }
+    except:
+        pass
 
     # just dumping every 200 runs
     if count % 200 == 0:
