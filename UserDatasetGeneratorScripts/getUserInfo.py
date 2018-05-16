@@ -50,8 +50,8 @@ for username in users:
     except:
         pass
 
-    # just dumping every 400 runs, the rate is about 2000 per hour, so this makes it flush cca each 12 minutes
-    if count % 400 == 0:
+    # just dumping every 500 runs, the rate is about 2000 per hour, so this makes it flush cca each 15 minutes
+    if count % 500 == 0:
         print('{} users processed, dumping them to file'.format(count))
         with open(dataFile, 'wb') as f:
             pickle.dump(users, f)
