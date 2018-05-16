@@ -11,4 +11,4 @@ import time
 from calculateAnnotations import calculate_annotations
 
 if __name__ == '__main__':
-    calculate_annotations('UserListBackupTuple.rick', 'UserInfoBackup.rick')
+    calculate_annotations('UserListBackup.rick', 'UserInfoBackup.rick')
