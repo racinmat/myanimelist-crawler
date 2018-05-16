@@ -9,6 +9,7 @@ import pickle
 import requests
 import json
 import sys
+from utils import AnimeRecord
 
 count = 0  # keep count of user for current session
 
@@ -54,24 +55,24 @@ for username in users:
                 userData['anime'] = [userData['anime']]
 
             for anime in userData['anime']:
-                anime_record = {
-                    'series_animedb_id': anime['series_animedb_id'],    # this is MAL anime ID, enough to identify it
-                    'my_watched_episodes': anime['my_watched_episodes'],
-                    'my_start_date': anime['my_start_date'],
-                    'my_finish_date': anime['my_finish_date'],
-                    'my_score': anime['my_score'],
-                    'my_status': anime['my_status'],
-                    'my_rewatching': anime['my_rewatching'],
-                    'my_rewatching_ep': anime['my_rewatching_ep'],
-                    'my_last_updated': anime['my_last_updated'],
-                    'my_tags': anime['my_tags'],
-                }
+                anime_record = AnimeRecord(
+                    series_animedb_id=anime['series_animedb_id'],    # this is MAL anime ID, enough to identify it
+                    my_watched_episodes=anime['my_watched_episodes'],
+                    my_start_date=anime['my_start_date'],
+                    my_finish_date=anime['my_finish_date'],
+                    my_score=anime['my_score'],
+                    my_status=anime['my_status'],
+                    my_rewatching=anime['my_rewatching'],
+                    my_rewatching_ep=anime['my_rewatching_ep'],
+                    my_last_updated=anime['my_last_updated'],
+                    my_tags=anime['my_tags'],
+                )
                 user['anime'].append(anime_record)
         else:
             user['anime'] = None    # just no data downloaded
         user['loadedRatings'] = True
 
-        print('Writing data for {}th user, {} complete.'.format(count, username))  # console message
+        print('Writing data for {}-th user, {} complete.'.format(count, username))  # console message
     else:
         print(username, 'don\'t have any anime in their list.')
         # console message for those user who don't have any anime in their list

@@ -90,3 +90,5 @@ For 1.1GB json which takes 157 seconds to save
 the pickle is 488 MB and takes 14.5 seconds to save
 
 so there is about 56% size compression, it is 2.25 times smaller, and persisting is 10 times faster, totally worth it.
+
+used namedtuple for anime record in animelist, there is 27% size compression and 17% less RAM usage, though loading and saving takes little more time

@@ -8,11 +8,11 @@ import json
 import pickle
 import time
 import csv
-
+from utils import AnimeRecord
 import progressbar
 
 if __name__ == '__main__':
-    with open('UserListBackup.rick', 'rb') as f:    # could take long, like this it wont interfere with the ongoing scraping
+    with open('UserListBackupTuple.rick', 'rb') as f:    # could take long, like this it wont interfere with the ongoing scraping
         users = pickle.load(f)
 
     print('data loaded, going to dump')
@@ -65,19 +65,20 @@ if __name__ == '__main__':
             if user['anime'] is None:
                 continue
 
+            # named tuple is used for anime
             for anime in user['anime']:
                 writer.writerow([
                     user['username'],
-                    anime['series_animedb_id'],
-                    anime['my_watched_episodes'],
-                    anime['my_start_date'],
-                    anime['my_finish_date'],
-                    anime['my_score'],
-                    anime['my_status'],
-                    anime['my_rewatching'],
-                    anime['my_rewatching_ep'],
-                    anime['my_last_updated'],
-                    anime['my_tags'],
+                    anime.series_animedb_id,
+                    anime.my_watched_episodes,
+                    anime.my_start_date,
+                    anime.my_finish_date,
+                    anime.my_score,
+                    anime.my_status,
+                    anime.my_rewatching,
+                    anime.my_rewatching_ep,
+                    anime.my_last_updated,
+                    anime.my_tags,
                 ])
 
     print('animelists dumped to csv')
