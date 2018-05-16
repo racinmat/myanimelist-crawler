@@ -76,8 +76,8 @@ for username in users:
         print(username, 'don\'t have any anime in their list.')
         # console message for those user who don't have any anime in their list
 
-    # just dumping every 200 runs
-    if count % 200 == 0:
+    # just dumping every 400 runs, the rate is about 1000 per hour, so this makes it flush cca each 24 minutes
+    if count % 400 == 0:
         print('{} users processed, dumping them to file'.format(count))
         with open(dataFile, 'wb') as f:
             pickle.dump(users, f)
