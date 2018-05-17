@@ -61,27 +61,37 @@ if __name__ == '__main__':
     #     {'$group': {'_id': None, 'total_size': {'$sum': "$list_size"}}}
     # ]))[0]['total_size']))
 
-    print('{} anime records in total'.format(list(users_db.aggregate([
-        {'$match': {'$and': [{'loadedRatings': {'$eq': True}}, {'anime': {"$ne": None}}]}},
-        {'$unwind': {
-            'path': '$anime',
-            'preserveNullAndEmptyArrays': False
-        }},
-        # {'$project': {'list_size': {'$size': '$anime'}}},
-        # {'$group': {'_id': None, 'total_size': {'$sum': "$anime"}}}
-        {'$count': 'total_size'}
-    ]))[0]['total_size']))
+    # print('{} anime records in total'.format(list(users_db.aggregate([
+    #     {'$match': {'$and': [{'loadedRatings': {'$eq': True}}, {'anime': {"$ne": None}}]}},
+    #     {'$unwind': {
+    #         'path': '$anime',
+    #         'preserveNullAndEmptyArrays': False
+    #     }},
+    #     # {'$project': {'list_size': {'$size': '$anime'}}},
+    #     # {'$group': {'_id': None, 'total_size': {'$sum': "$anime"}}}
+    #     {'$count': 'total_size'}
+    # ]))[0]['total_size']))
 
     # calculating only ratings
 
-    print('{} anime records in total'.format(list(users_db.aggregate([
+    # print('{} score ratings for anime'.format(list(users_db.aggregate([
+    #     {'$match': {'$and': [{'loadedRatings': {'$eq': True}}, {'anime': {"$ne": None}}]}},
+    #     {'$unwind': {
+    #         'path': '$anime',
+    #         'preserveNullAndEmptyArrays': False
+    #     }},
+    #     {'$match': {'anime.my_score': {'$ne': '0'}}},
+    #     # {'$project': {'list_size': {'$size': '$anime'}}},
+    #     # {'$group': {'_id': None, 'total_size': {'$sum': "$anime"}}}
+    #     {'$count': 'total_size'}
+    # ]))[0]['total_size']))
+
+    print('{} unique animes'.format(list(users_db.aggregate([
         {'$match': {'$and': [{'loadedRatings': {'$eq': True}}, {'anime': {"$ne": None}}]}},
         {'$unwind': {
             'path': '$anime',
             'preserveNullAndEmptyArrays': False
         }},
-        {'$match': {'anime.my_score': {'$ne': '0'}}},
-        # {'$project': {'list_size': {'$size': '$anime'}}},
-        # {'$group': {'_id': None, 'total_size': {'$sum': "$anime"}}}
-        {'$count': 'total_size'}
-    ]))[0]['total_size']))
+        {'$group': {'_id': '$anime.series_animedb_id', 'anime': {'$sum': 1}}},
+        {'$count': 'anime'}
+    ]))[0]['anime']))

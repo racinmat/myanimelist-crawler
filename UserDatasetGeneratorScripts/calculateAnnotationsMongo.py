@@ -38,12 +38,22 @@ def calculate_annotations(users_file, users_info_file):
     print('{} of them have ratings annotations'.format(users_db.find({'loadedRatings': True}).count()))
     print('{} anime records in total'.format(list(users_db.aggregate([
         {'$match': {'$and': [{'loadedRatings': {'$eq': True}}, {'anime': {"$ne": None}}]}},
-        {'$project': {'list_size': {'$size': '$anime'}}},
-        {'$group': {'_id': None, 'total_size': {'$sum': "$list_size"}}}
+        {'$unwind': {'path': '$anime', 'preserveNullAndEmptyArrays': False}},
+        {'$count': 'total_size'}
     ]))[0]['total_size']))
-    print('{} score ratings for anime'.format(len([r for u in users_db.find({'loadedRatings': True, 'anime': {"$ne": None}}) for r in u['anime'] if r.my_score != '0'])))
-    print('{} unique animes'.format(len(set([r.series_animedb_id for u in users_db.find({'loadedRatings': True, 'anime': {"$ne": None}}) for r in u['anime']]))))
-    print('{} of them have annotations but not data'.format(len([u for u in users_db.find({'loadedRatings': True, "myinfo": {"$exists": False}})])))
+    print('{} score ratings for anime'.format(list(users_db.aggregate([
+        {'$match': {'$and': [{'loadedRatings': {'$eq': True}}, {'anime': {"$ne": None}}]}},
+        {'$unwind': {'path': '$anime', 'preserveNullAndEmptyArrays': False}},
+        {'$match': {'anime.my_score': {'$ne': '0'}}},
+        {'$count': 'total_size'}
+    ]))[0]['total_size']))
+    print('{} unique animes'.format(list(users_db.aggregate([
+        {'$match': {'$and': [{'loadedRatings': {'$eq': True}}, {'anime': {"$ne": None}}]}},
+        {'$unwind': {'path': '$anime','preserveNullAndEmptyArrays': False}},
+        {'$group': {'_id': '$anime.series_animedb_id', 'anime': {'$sum': 1}}},
+        {'$count': 'anime'}
+    ]))[0]['anime']))
+    print('{} of them have annotations but not data'.format(users_db.find({'loadedRatings': True, "myinfo": {"$exists": False}}).count()))
     print('{} of them have info annotations'.format(users_db.find({'loadedInfo': True}).count()))
     print('{} of them have info annotations but not info'.format(users_db.find({'loadedInfo': True, "info": {"$exists": False}}).count()))
     print('{} of them have gender'.format(users_db.find({'loadedInfo': True, "info.gender": {"$ne": None}}).count()))

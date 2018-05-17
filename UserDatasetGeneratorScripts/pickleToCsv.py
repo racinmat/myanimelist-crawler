@@ -61,7 +61,7 @@ if __name__ == '__main__':
                     userInfo['info']['birth_date'],
                     userInfo['info']['access_rank'],
                     userInfo['info']['join_date'],
-                    userInfo['info']['last_online'],
+                    userInfo['info']['last_online'].strftime("%Y-%m-%d %H:%M:%S"),
                     userInfo['info']['stats_mean_score'],
                     userInfo['info']['stats_rewatched'],
                     userInfo['info']['stats_episodes'],

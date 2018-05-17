@@ -9,6 +9,7 @@ import pickle
 import time
 import csv
 
+from pymaybe import maybe
 from pymongo import MongoClient
 
 from utils import AnimeRecord
@@ -59,12 +60,15 @@ if __name__ == '__main__':
                         user['myinfo']['user_days_spent_watching'],
                     ]
                     if user['loadedInfo']:
+                        # mongodb supports only datetime, creating date back where it was
                         rowData.extend([
                             user['info']['gender'],
                             user['info']['location'],
-                            user['info']['birth_date'],
+                            # None if user['info']['birth_date'] is None else user['info']['birth_date'].date(),
+                            maybe(user['info']['birth_date']).strftime("%Y-%m-%d"),
                             user['info']['access_rank'],
-                            user['info']['join_date'],
+                            # None if user['info']['join_date'] is None else user['info']['join_date'].date(),
+                            maybe(user['info']['join_date']).strftime("%Y-%m-%d"),
                             user['info']['last_online'],
                             user['info']['stats_mean_score'],
                             user['info']['stats_rewatched'],
