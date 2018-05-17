@@ -28,6 +28,8 @@ def calculate_annotations(users_file, users_info_file):
     print('{} unique users'.format(len(usersInfo)))
     print('{} of them have annotations'.format(len([u for u in usersInfo if usersInfo[u]['loadedInfo']])))
     print('{} of them have annotations but not info'.format(len([u for u in usersInfo if usersInfo[u]['loadedInfo'] and 'info' not in usersInfo[u]])))
+    print('{} of them have gender'.format(len([u for u in usersInfo if usersInfo[u]['loadedInfo'] and usersInfo[u]['info']['gender'] is not None])))
+    print('{} of them have ratings and gender'.format(len([u for u in usersInfo if users[u]['loadedRatings'] and usersInfo[u]['loadedInfo'] and usersInfo[u]['info']['gender'] is not None])))
 
     print('merged data')
     print('{} of them have all annotations'.format(len([u for u in usersInfo if users[u]['loadedRatings'] and usersInfo[u]['loadedInfo']])))

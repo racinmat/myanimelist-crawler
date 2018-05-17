@@ -4,6 +4,7 @@ The idea is to extract user fro the post.
 
 Output file contains list of username, one at each line.
 '''
+import datetime
 import json
 import pickle
 import time
@@ -22,19 +23,38 @@ if __name__ == '__main__':
         usersInfo = pickle.load(f)
 
     print('data loaded, going to merge')
+    widgets = [progressbar.Percentage(), ' ', progressbar.Counter(), ' ', progressbar.Bar(), ' ',
+               progressbar.FileTransferSpeed()]
+    pbar = progressbar.ProgressBar(widgets=widgets, max_value=len(users)).start()
+    counter = 0
 
     for username in users:
+        counter += 1
+        pbar.update(counter)
         user = users[username]
         userInfo = usersInfo[username]
-        if usersInfo['loadedInfo']:
+        if userInfo['loadedInfo']:
             user['loadedInfo'] = True
             user['info'] = userInfo['info']
+            if user['info']['join_date'] is not None:
+                user['info']['join_date'] = datetime.datetime.combine(user['info']['join_date'], datetime.time())
+            if user['info']['birth_date'] is not None:
+                user['info']['birth_date'] = datetime.datetime.combine(user['info']['birth_date'], datetime.time())
+
 
     print('merged, going to fill db')
 
     mongo = MongoClient('localhost', 27017)
     users_db = mongo.mal.users
 
-    users_db.insert_many(users)
+    pbar = progressbar.ProgressBar(widgets=widgets, max_value=len(users)).start()
+    counter = 0
+
+    for username in users:
+        counter += 1
+        pbar.update(counter)
+        user = users[username]
+        user['_id'] = username
+        users_db.insert_one(users)
 
     print('db filled')
