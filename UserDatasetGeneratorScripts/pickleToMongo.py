@@ -41,6 +41,9 @@ if __name__ == '__main__':
             if user['info']['birth_date'] is not None:
                 user['info']['birth_date'] = datetime.datetime.combine(user['info']['birth_date'], datetime.time())
 
+        # transforming from namedtuples to dicts
+        if user['loadedRatings'] and user['anime'] is not None:
+            user['anime'] = [anime._asdict() for anime in user['anime']]
 
     print('merged, going to fill db')
 
@@ -55,6 +58,8 @@ if __name__ == '__main__':
         pbar.update(counter)
         user = users[username]
         user['_id'] = username
-        users_db.insert_one(users)
+
+        # from named tuple into dict
+        users_db.insert_one(user)
 
     print('db filled')
