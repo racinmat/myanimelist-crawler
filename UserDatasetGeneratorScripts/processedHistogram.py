@@ -7,6 +7,8 @@ Output file contains list of username, one at each line.
 import json
 import pickle
 import time
+from datetime import datetime
+
 import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pyplot as plt
@@ -22,12 +24,12 @@ def calculate_annotations(users_file, users_info_file):
     processed_ratings = [i for i, u in enumerate(users.keys()) if users[u]['loadedRatings']]
     processed_infos = [i for i, u in enumerate(usersInfo.keys()) if usersInfo[u]['loadedInfo']]
 
-    plt.figure()
-    plt.hist(processed_ratings, bins=1000, alpha=0.5, color='b', label='ratings')
-    plt.hist(processed_infos, bins=1000, alpha=0.5, color='r', label='infos')
+    plt.figure(figsize=(80, 6))
+    plt.hist(processed_ratings, bins=30000, alpha=0.5, color='b', label='ratings')
+    plt.hist(processed_infos, bins=30000, alpha=0.5, color='r', label='infos')
     plt.legend(loc='upper right')
-    plt.savefig('processed_hist.png')
+    plt.savefig('processed_hist_{}.png'.format(datetime.now()))
 
 
 if __name__ == '__main__':
-    calculate_annotations('UserList.rick', 'UserInfo.rick')
+    calculate_annotations('UserListBackup.rick', 'UserInfoBackup.rick')

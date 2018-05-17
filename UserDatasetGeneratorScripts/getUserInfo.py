@@ -47,7 +47,8 @@ for username in users:
             'stats_rewatched': userData.anime_stats['Rewatched'],
             'stats_episodes': userData.anime_stats['Episodes'],
         }
-    except:
+    except Exception as e:
+        # raise e   # for debugging parsing
         pass
 
     # just dumping every 500 runs, the rate is about 2000 per hour, so this makes it flush cca each 15 minutes

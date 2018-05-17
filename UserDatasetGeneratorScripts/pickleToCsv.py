@@ -12,8 +12,11 @@ from utils import AnimeRecord
 import progressbar
 
 if __name__ == '__main__':
-    with open('UserListBackupTuple.rick', 'rb') as f:    # could take long, like this it wont interfere with the ongoing scraping
+    with open('UserListBackup.rick', 'rb') as f:    # could take long, like this it wont interfere with the ongoing scraping
         users = pickle.load(f)
+
+    with open('UserInfoBackup.rick', 'rb') as f:    # could take long, like this it wont interfere with the ongoing scraping
+        usersInfo = pickle.load(f)
 
     print('data loaded, going to dump')
 
@@ -28,19 +31,46 @@ if __name__ == '__main__':
 
         # header
         writer.writerow(['username', 'user_id', 'user_watching', 'user_completed', 'user_onhold', 'user_dropped',
-                         'user_plantowatch', 'user_days_spent_watching'])
+                         'user_plantowatch', 'user_days_spent_watching', 'gender', 'location', 'birth_date',
+                         'access_rank', 'join_date', 'last_online', 'stats_mean_score', 'stats_rewatched',
+                         'stats_episodes'])
 
         for username in users:
             counter += 1
             pbar.update(counter)
 
             user = users[username]
+            userInfo = usersInfo[username]
             if not user['loadedRatings']:
                 continue
-            writer.writerow([username, user['myinfo']['user_id'], user['myinfo']['user_watching'],
-                             user['myinfo']['user_completed'], user['myinfo']['user_onhold'],
-                             user['myinfo']['user_dropped'], user['myinfo']['user_plantowatch'],
-                             user['myinfo']['user_days_spent_watching']])
+
+            rowData = [
+                username,
+                user['myinfo']['user_id'],
+                user['myinfo']['user_watching'],
+                user['myinfo']['user_completed'],
+                user['myinfo']['user_onhold'],
+                user['myinfo']['user_dropped'],
+                user['myinfo']['user_plantowatch'],
+                user['myinfo']['user_days_spent_watching'],
+            ]
+            if userInfo['loadedInfo']:
+                rowData.extend([
+                    userInfo['info']['gender'],
+                    userInfo['info']['location'],
+                    userInfo['info']['birth_date'],
+                    userInfo['info']['access_rank'],
+                    userInfo['info']['join_date'],
+                    userInfo['info']['last_online'],
+                    userInfo['info']['stats_mean_score'],
+                    userInfo['info']['stats_rewatched'],
+                    userInfo['info']['stats_episodes'],
+                ])
+            else:
+                rowData.extend([
+                    '', '', '', '', '', '', '', '', ''
+                ])
+            writer.writerow(rowData)
 
     print('users dumped to csv, going to dump animelists')
     pbar = progressbar.ProgressBar(widgets=widgets, max_value=len(users)).start()
