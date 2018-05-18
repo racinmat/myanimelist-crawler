@@ -6,11 +6,13 @@ it will be later merged into UserList.py, but till that time, they will run in p
 '''
 
 # importing libraries
+import datetime
 import json
 
 import requests
 
 import myanimelist.session
+from pymaybe import maybe
 
 from utils import AnimeRecord
 
@@ -30,12 +32,12 @@ def load_user_info(username):
     info = {
         'gender': userData.gender,
         'location': userData.location,
-        'birth_date': userData.birthday,
+        'birth_date': None if userData.birthday is None else datetime.datetime.combine(userData.birthday, datetime.time()),
         # 'about': userData.about,
         'access_rank': userData.access_rank,
         # 'clubs': userData.clubs,
         # 'friends': userData.friends,
-        'join_date': userData.join_date,
+        'join_date': None if userData.join_date is None else datetime.datetime.combine(userData.join_date, datetime.time()),
         'last_online': userData.last_online,
         # 'reviews': userData.reviews,
         # 'recommendations': userData.recommendations,
@@ -105,6 +107,7 @@ def load_user_ratings(username):
 if __name__ == '__main__':
     # here I just try the api and what could be useful
     # username = 'RedvelvetDaisuki'
-    username = 'imagematerial'
+    # username = 'imagematerial'
+    username = 'shuzzable'
     load_user_info(username)
     load_user_ratings(username)

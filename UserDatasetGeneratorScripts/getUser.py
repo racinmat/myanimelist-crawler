@@ -55,9 +55,9 @@ def load_users_pickle():
     return users.values()
 
 
-def load_users_mongo(mongo):
+def load_users_mongo(mongo, filter):
     users_db = mongo.mal.users
-    return users_db.find()
+    return users_db.find(filter=filter)
 
 
 def save_users_pickle(users):
@@ -81,6 +81,7 @@ def save_users_mongo_ratings(mongo, users):
 
 
 def save_users_mongo_infos(mongo, users):
+    # print('there is {} users with ids: {}'.format(len(users), [u['_id'] for u in users]))
     if len(users) == 0:
         return
     operations = [pymongo.operations.UpdateOne(
@@ -101,7 +102,7 @@ if __name__ == '__main__':
 
     changed_users = []  # for mongo
     # users = load_users_pickle()
-    users = load_users_mongo(mongo)
+    users = load_users_mongo(mongo, {'loadedRatings': False})
     for user in users:
         username = user['username']
 
@@ -156,7 +157,8 @@ if __name__ == '__main__':
 
         # just dumping every 500 runs, the rate is about 1000 per hour, so this makes it flush cca each 30 minutes
         # flushing takes ca 4 minutes for 5 GB
-        if count % 500 == 0:
+        # every 100 for mongo, because I can
+        if count % 100 == 0:
             print('{} users processed, persisting them'.format(count))
             # save_users_pickle(users)
             save_users_mongo_ratings(mongo, changed_users)

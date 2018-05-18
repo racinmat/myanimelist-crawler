@@ -16,7 +16,7 @@ import sys
 import myanimelist.session
 from pymaybe import maybe
 from pymongo import MongoClient
-from getUser import *
+from getUser import load_users_mongo, save_users_mongo_infos
 
 if __name__ == '__main__':
     count = 0  # keep count of user for current session
@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
     changed_users = []  # for mongo
     # users = load_users_pickle()
-    users = load_users_mongo(mongo)
+    users = load_users_mongo(mongo, {'loadedInfo': False})
     for user in users:
         username = user['username']
 
@@ -47,9 +47,11 @@ if __name__ == '__main__':
             user['info'] = {
                 'gender': userData.gender,
                 'location': userData.location,
-                'birth_date': datetime.datetime.combine(userData.birthday, datetime.time()),
+                'birth_date': None if userData.birthday is None else datetime.datetime.combine(userData.birthday,
+                                                                                               datetime.time()),
                 'access_rank': userData.access_rank,
-                'join_date': datetime.datetime.combine(maybe(userData.join_date), datetime.time()),
+                'join_date': None if userData.join_date is None else datetime.datetime.combine(userData.join_date,
+                                                                                               datetime.time()),
                 'last_online': userData.last_online,
                 'stats_mean_score': userData.anime_stats['Mean Score'],
                 'stats_rewatched': userData.anime_stats['Rewatched'],
@@ -63,7 +65,8 @@ if __name__ == '__main__':
             pass
 
         # just dumping every 500 runs, the rate is about 2000 per hour, so this makes it flush cca each 15 minutes
-        if count % 500 == 0:
+        # every 100 for mongo, because I can
+        if count % 100 == 0:
             print('{} users processed, persisting them'.format(count))
             # save_users_pickle(users)
             save_users_mongo_infos(mongo, changed_users)
