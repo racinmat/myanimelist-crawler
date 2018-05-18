@@ -52,10 +52,10 @@ def anime_record_to_dict(anime_rec):
 def load_users_pickle():
     with open(dataFile, 'rb') as f:
         users = pickle.load(f)
-    return users
+    return users.values()
 
 
-def load_users_mongo():
+def load_users_mongo(mongo):
     users_db = mongo.mal.users
     return users_db.find()
 
@@ -65,7 +65,7 @@ def save_users_pickle(users):
         pickle.dump(users, f)
 
 
-def save_users_mongo_ratings(users):
+def save_users_mongo_ratings(mongo, users):
     operations = [pymongo.operations.UpdateOne(
         filter={"_id": user["_id"]},
         # I know what I want to update and my fields are non-overlapping, no overwrites, nice
@@ -78,7 +78,7 @@ def save_users_mongo_ratings(users):
     mongo.mal.users.bulk_write(operations)
 
 
-def save_users_mongo_infos(users):
+def save_users_mongo_infos(mongo, users):
     operations = [pymongo.operations.UpdateOne(
         filter={"_id": user["_id"]},
         # I know what I want to update and my fields are non-overlapping, no overwrites, nice
@@ -97,9 +97,9 @@ if __name__ == '__main__':
 
     changed_users = []  # for mongo
     # users = load_users_pickle()
-    users = load_users_mongo()
-    for username in users:
-        user = users[username]
+    users = load_users_mongo(mongo)
+    for user in users:
+        username = user['username']
 
         if user['loadedRatings']:
             print('already loaded, skipping')
@@ -155,13 +155,13 @@ if __name__ == '__main__':
         if count % 500 == 0:
             print('{} users processed, persisting them'.format(count))
             # save_users_pickle(users)
-            save_users_mongo_ratings(changed_users)
+            save_users_mongo_ratings(mongo, changed_users)
             print('dumping done')
             changed_users = []
 
     print('all users processed, persisting them')
     # save_users_pickle(users)
-    save_users_mongo_ratings(changed_users)
+    save_users_mongo_ratings(mongo, changed_users)
     print('dumping done')
 
     print('Total', count, 'user data fetched. Done.')

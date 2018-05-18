@@ -25,9 +25,9 @@ if __name__ == '__main__':
 
     changed_users = []  # for mongo
     # users = load_users_pickle()
-    users = load_users_mongo()
-    for username in users:
-        user = users[username]
+    users = load_users_mongo(mongo)
+    for user in users:
+        username = user['username']
 
         if user['loadedInfo']:
             print('already loaded, skipping')
@@ -64,13 +64,13 @@ if __name__ == '__main__':
         if count % 500 == 0:
             print('{} users processed, persisting them'.format(count))
             # save_users_pickle(users)
-            save_users_mongo_infos(changed_users)
+            save_users_mongo_infos(mongo, changed_users)
             print('dumping done')
             changed_users = []
 
     print('all users processed, persisting them')
     # save_users_pickle(users)
-    save_users_mongo_infos(changed_users)
+    save_users_mongo_infos(mongo, changed_users)
     print('dumping done')
 
     print('Total', count, 'user data fetched. Done.')
