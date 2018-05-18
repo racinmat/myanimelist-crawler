@@ -64,13 +64,13 @@ if __name__ == '__main__':
         if count % 500 == 0:
             print('{} users processed, persisting them'.format(count))
             # save_users_pickle(users)
-            save_users_mongo(changed_users)
+            save_users_mongo_infos(changed_users)
             print('dumping done')
             changed_users = []
 
     print('all users processed, persisting them')
     # save_users_pickle(users)
-    save_users_mongo(changed_users)
+    save_users_mongo_infos(changed_users)
     print('dumping done')
 
     print('Total', count, 'user data fetched. Done.')

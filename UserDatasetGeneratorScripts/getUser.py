@@ -65,12 +65,28 @@ def save_users_pickle(users):
         pickle.dump(users, f)
 
 
-def save_users_mongo(users):
-    operations = [pymongo.operations.ReplaceOne(
+def save_users_mongo_ratings(users):
+    operations = [pymongo.operations.UpdateOne(
         filter={"_id": user["_id"]},
-        replacement=user,
+        # I know what I want to update and my fields are non-overlapping, no overwrites, nice
+        update={'$set': {
+            'loadedRatings': user['loadedRatings'],
+            'myinfo': user['myinfo'],
+            'anime': user['anime'],
+        }}
     ) for user in users]
+    mongo.mal.users.bulk_write(operations)
 
+
+def save_users_mongo_infos(users):
+    operations = [pymongo.operations.UpdateOne(
+        filter={"_id": user["_id"]},
+        # I know what I want to update and my fields are non-overlapping, no overwrites, nice
+        update={'$set': {
+            'loadedInfo': user['loadedInfo'],
+            'info': user['info'],
+        }}
+    ) for user in users]
     mongo.mal.users.bulk_write(operations)
 
 
@@ -139,13 +155,13 @@ if __name__ == '__main__':
         if count % 500 == 0:
             print('{} users processed, persisting them'.format(count))
             # save_users_pickle(users)
-            save_users_mongo(changed_users)
+            save_users_mongo_ratings(changed_users)
             print('dumping done')
             changed_users = []
 
     print('all users processed, persisting them')
     # save_users_pickle(users)
-    save_users_mongo(changed_users)
+    save_users_mongo_ratings(changed_users)
     print('dumping done')
 
     print('Total', count, 'user data fetched. Done.')
