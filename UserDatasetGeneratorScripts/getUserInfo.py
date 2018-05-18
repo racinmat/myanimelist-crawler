@@ -7,19 +7,50 @@ it will be later merged into UserList.py, but till that time, they will run in p
 
 # importing libraries
 import pickle
+
+import pymongo
 import requests
 import json
 import sys
 import myanimelist.session
+from pymongo import MongoClient
+
+
+def load_users_pickle():
+    with open(dataFile, 'rb') as f:
+        users = pickle.load(f)
+    return users
+
+
+def load_users_mongo():
+    users_db = mongo.mal.users
+    return users_db.find()
+
+
+def save_users_pickle(users):
+    with open(dataFile, 'wb') as f:
+        pickle.dump(users, f)
+
+
+def save_users_mongo(users):
+    operations = [pymongo.operations.ReplaceOne(
+        filter={"_id": user["_id"]},
+        replacement=user,
+        upsert=True
+    ) for user in users]
+
+    mongo.mal.users.bulk_write(operations)
+
 
 count = 0  # keep count of user for current session
 
 dataFile = 'UserInfo.rick'
+mongo = MongoClient('localhost', 27017)
 session = myanimelist.session.Session()
 
-with open(dataFile, 'rb') as f:
-    users = pickle.load(f)
-
+changed_users = []  # for mongo
+# users = load_users_pickle()
+users = load_users_mongo()
 for username in users:
     user = users[username]
 
@@ -47,20 +78,24 @@ for username in users:
             'stats_rewatched': userData.anime_stats['Rewatched'],
             'stats_episodes': userData.anime_stats['Episodes'],
         }
+
+        # for mongo
+        changed_users.append(user)
     except Exception as e:
         # raise e   # for debugging parsing
         pass
 
     # just dumping every 500 runs, the rate is about 2000 per hour, so this makes it flush cca each 15 minutes
     if count % 500 == 0:
-        print('{} users processed, dumping them to file'.format(count))
-        with open(dataFile, 'wb') as f:
-            pickle.dump(users, f)
+        print('{} users processed, persisting them'.format(count))
+        # save_users_pickle(users)
+        save_users_mongo(changed_users)
         print('dumping done')
+        changed_users = []
 
-print('all users processed, dumping them to file')
-with open(dataFile, 'wb') as f:
-    pickle.dump(users, f)
+print('all users processed, persisting them')
+# save_users_pickle(users)
+save_users_mongo(changed_users)
 print('dumping done')
 
 print('Total', count, 'user data fetched. Done.')
