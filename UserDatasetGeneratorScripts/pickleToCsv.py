@@ -8,6 +8,9 @@ import json
 import pickle
 import time
 import csv
+
+from pymaybe import maybe
+
 from utils import AnimeRecord
 import progressbar
 
@@ -58,9 +61,9 @@ if __name__ == '__main__':
                 rowData.extend([
                     userInfo['info']['gender'],
                     userInfo['info']['location'],
-                    userInfo['info']['birth_date'],
+                    maybe(user['info']['birth_date']).strftime("%Y-%m-%d").or_else(''),
                     userInfo['info']['access_rank'],
-                    userInfo['info']['join_date'],
+                    maybe(user['info']['join_date']).strftime("%Y-%m-%d").or_else(''),
                     userInfo['info']['last_online'].strftime("%Y-%m-%d %H:%M:%S"),
                     userInfo['info']['stats_mean_score'],
                     userInfo['info']['stats_rewatched'],
