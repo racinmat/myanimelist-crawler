@@ -66,6 +66,8 @@ def save_users_pickle(users):
 
 
 def save_users_mongo_ratings(mongo, users):
+    if len(users) == 0:
+        return
     operations = [pymongo.operations.UpdateOne(
         filter={"_id": user["_id"]},
         # I know what I want to update and my fields are non-overlapping, no overwrites, nice
@@ -79,6 +81,8 @@ def save_users_mongo_ratings(mongo, users):
 
 
 def save_users_mongo_infos(mongo, users):
+    if len(users) == 0:
+        return
     operations = [pymongo.operations.UpdateOne(
         filter={"_id": user["_id"]},
         # I know what I want to update and my fields are non-overlapping, no overwrites, nice

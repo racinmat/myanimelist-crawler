@@ -6,6 +6,7 @@ it will be later merged into UserList.py, but till that time, they will run in p
 '''
 
 # importing libraries
+import datetime
 import pickle
 
 import pymongo
@@ -13,6 +14,7 @@ import requests
 import json
 import sys
 import myanimelist.session
+from pymaybe import maybe
 from pymongo import MongoClient
 from getUser import *
 
@@ -45,9 +47,9 @@ if __name__ == '__main__':
             user['info'] = {
                 'gender': userData.gender,
                 'location': userData.location,
-                'birth_date': userData.birthday,
+                'birth_date': datetime.datetime.combine(userData.birthday, datetime.time()),
                 'access_rank': userData.access_rank,
-                'join_date': userData.join_date,
+                'join_date': datetime.datetime.combine(maybe(userData.join_date), datetime.time()),
                 'last_online': userData.last_online,
                 'stats_mean_score': userData.anime_stats['Mean Score'],
                 'stats_rewatched': userData.anime_stats['Rewatched'],
