@@ -95,6 +95,27 @@ def save_users_mongo_infos(mongo, users):
     mongo.mal.users.bulk_write(operations)
 
 
+def load_user_data(username):
+    apiUrl = 'https://kuristina.herokuapp.com/anime/' + username + '.json'  # base url
+    print('Reading {} AnimeList from {}'.format(username, apiUrl))  # console message
+
+    # API call to get JSON
+    page = requests.get(apiUrl)
+    if page.status_code == 503:  # I don't know why, but e.g. https://kuristina.herokuapp.com/anime/purplepinapples.json returns 503 and shuts down the app
+        print('something is broken, fuck')
+        return None
+
+    c = page.content
+    # Decoding JSON
+    jsonData = json.loads(c)
+
+    # checking keys
+    if 'myinfo' not in jsonData['myanimelist']:
+        return None
+
+    return jsonData
+
+
 if __name__ == '__main__':
     count = 0  # keep count of user for current session
     dataFile = 'UserList.rick'
@@ -113,16 +134,11 @@ if __name__ == '__main__':
         apiUrl = 'https://kuristina.herokuapp.com/anime/' + username + '.json'  # base url
         print('Reading {} AnimeList from {}'.format(username, apiUrl))  # console message
 
-        # API call to get JSON
-        page = requests.get(apiUrl)
-        if page.status_code == 503:     # I don't know why, but e.g. https://kuristina.herokuapp.com/anime/purplepinapples.json returns 503 and shuts down the app
-            print('something is broken, fuck')
-            continue
-
-        c = page.content
-
-        # Decoding JSON
-        jsonData = json.loads(c)
+        tries = 0
+        jsonData = load_user_data(username)
+        while tries < 2 and jsonData is None:
+            tries += 1
+            jsonData = load_user_data(username)
 
         # checking if json data is present
         if jsonData['myanimelist'] is not None:
