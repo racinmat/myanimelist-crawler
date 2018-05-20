@@ -109,6 +109,9 @@ def load_user_data(username):
     # Decoding JSON
     jsonData = json.loads(c)
 
+    if jsonData['myanimelist'] is None:
+        return None
+
     # checking keys
     if 'myinfo' not in jsonData['myanimelist']:
         return None
@@ -139,6 +142,9 @@ if __name__ == '__main__':
         while tries < 2 and jsonData is None:
             tries += 1
             jsonData = load_user_data(username)
+
+        if jsonData is None:
+            continue
 
         # checking if json data is present
         if jsonData['myanimelist'] is not None:
