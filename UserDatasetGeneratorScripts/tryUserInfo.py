@@ -108,6 +108,9 @@ if __name__ == '__main__':
     # here I just try the api and what could be useful
     # username = 'RedvelvetDaisuki'
     # username = 'imagematerial'
-    username = 'shuzzable'
+    # username = 'shuzzable'
+    # username = 'Kallykon'
+    # username = 'Crispy_Steak'
+    username = 'Io_otonashi'
     load_user_info(username)
-    load_user_ratings(username)
+    # load_user_ratings(username)

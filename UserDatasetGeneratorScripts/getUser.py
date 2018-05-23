@@ -12,6 +12,7 @@ import requests
 import json
 import sys
 
+from myanimelist import utilities
 from pymongo import MongoClient
 
 from utils import AnimeRecord
@@ -57,7 +58,7 @@ def load_users_pickle():
 
 def load_users_mongo(mongo, filter):
     users_db = mongo.mal.users
-    return users_db.find(filter=filter)
+    return users_db.find(filter=filter).batch_size(50)   # trying smaller batch size so we don't get cursor timeout. Batch size should be small enough to be processed as whole in 10 minutes
 
 
 def save_users_pickle(users):
@@ -139,7 +140,7 @@ if __name__ == '__main__':
 
         tries = 0
         jsonData = load_user_data(username)
-        while tries < 2 and jsonData is None:
+        while tries < 3 and jsonData is None:
             tries += 1
             jsonData = load_user_data(username)
 
