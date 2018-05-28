@@ -27,9 +27,9 @@ if __name__ == '__main__':
                             quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
         # header
-        writer.writerow(['title', 'title_english', 'title_japanese', 'title_synonyms', 'image_url', 'type', 'source',
-                         'episodes', 'status', 'airing', 'aired_string', 'aired', 'duration', 'rating', 'score',
-                         'scored_by', 'rank', 'popularity', 'members', 'favorites', 'background', 'premiered',
+        writer.writerow(['anime_id', 'title', 'title_english', 'title_japanese', 'title_synonyms', 'image_url', 'type',
+                         'source', 'episodes', 'status', 'airing', 'aired_string', 'aired', 'duration', 'rating',
+                         'score', 'scored_by', 'rank', 'popularity', 'members', 'favorites', 'background', 'premiered',
                          'broadcast', 'related', 'producer', 'licensor', 'studio', 'genre', 'opening_theme',
                          'ending_theme'])
 
@@ -41,6 +41,7 @@ if __name__ == '__main__':
             if not anime['loadedInfo']:
                 continue
             writer.writerow([
+                id,
                 anime['title'],
                 anime['title_english'],
                 anime['title_japanese'],

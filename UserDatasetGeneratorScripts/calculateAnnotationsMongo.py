@@ -66,3 +66,4 @@ def calculate_annotations(users_file, users_info_file):
 
 if __name__ == '__main__':
     calculate_annotations('UserList.rick', 'UserInfo.rick')
+# max club id 41128
