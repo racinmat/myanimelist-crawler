@@ -111,6 +111,7 @@ if __name__ == '__main__':
     # username = 'shuzzable'
     # username = 'Kallykon'
     # username = 'Crispy_Steak'
-    username = 'Io_otonashi'
+    # username = 'Io_otonashi'
+    username = 'abystoma2'
     load_user_info(username)
     # load_user_ratings(username)
