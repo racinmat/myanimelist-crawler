@@ -110,6 +110,9 @@ def load_user_data(username):
     # Decoding JSON
     jsonData = json.loads(c)
 
+    from sklearn import manifold
+    embedder = manifold.MDS(2, max_iter=2000, n_init=5, dissimilarity='precomputed')
+    embeddings = embedder.fit_transform(dists_m)
     if jsonData['myanimelist'] is None:
         return None
 
