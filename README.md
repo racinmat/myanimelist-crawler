@@ -35,7 +35,7 @@ python getAnime.py starting_index ending_index [output_file.csv]
 
 ***
 
-# How to use User Daataset Generator
+# How to use User Dataset Generator
 
 This script can be used to download user dataset from [**Myanimelist**](https://myanimelist.net/) using an API, [**Kuristina**](https://github.com/TimboKZ/kuristina).
 
